@@ -7,6 +7,11 @@
 #' Values in matrix are numeric from 0-1, which represent the probability of becoming infected at \code{t} and \code{age_step}
 #' @examples To be entered
 #' 
+#' generate_incidence <- function(tim, age){return (0.02)}
+#' y <-  generate_incidence_matrix (age_step = 2, birth_dates = 10:15, generate_incidence)
+#' 
+#' 
+#' 
 
 generate_incidence_matrix <- function(age_step,
                                       birth_dates, 

@@ -9,8 +9,8 @@
 
 
 generate_susceptible_surv_rate <- function(incidence_matrix,
-                                           base_mortality_matrix)
-  {
+                                           base_mortality_matrix
+                                           ){
 
   susceptible_surv_rate = 1 - ( base_mortality_matrix * base_mortality_matrix)
 
@@ -21,5 +21,3 @@ generate_susceptible_surv_rate <- function(incidence_matrix,
 
 
 
-
-z = generate_susceptible_surv_rate(incidence_matrix = x, base_mortality_matrix = y)

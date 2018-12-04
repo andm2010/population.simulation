@@ -13,6 +13,7 @@
 #' @return a numeric vector that represents the incidence rate at \code{t}.
 #' @examples To be entered
 #' 
+#' generate_incidence (t=7, conc = 0.05, age_min = 0, age_max = 50,  age_peak= 25, Imin =0.01,  Ipeak =0.05,  Ifin =0.02)
 
 generate_incidence <- function(t, conc, age_min,  
                             age_max, age_peak, 
@@ -30,8 +31,3 @@ generate_incidence <- function(t, conc, age_min,
 devtools::document()
 
 
-# Example, to be included witing roxygen code above
-generate_incidence (t=7, conc = 0.05, age_min = 0,  
-  age_max = 50,  age_peak= 25, 
-  Imin =0.01,  Ipeak =0.05, 
-  Ifin =0.02)
