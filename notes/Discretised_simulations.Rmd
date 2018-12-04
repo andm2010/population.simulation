@@ -1,0 +1,274 @@
+
+library(rmarkdown)
+library(plotly)
+
+
+
+---
+title: "Discretized_Age_Time_Structure"
+author: "Laurette"
+date: "29 October 2018"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Discretized Age/Time Structure
+
+This script summerises major functions using a discretised approach in simulating the susceptible and infected populations an  given age window and time.
+The key inputs to the functions include:
+
+1.  Susceptible Net Attritation rate - The probability of remaining in the susceptible population uninfeceted and not deceased  
+2.  Infected Net Attritation rate - The probability of not dying due to  death (i.e excess mortality or natural death)
+2.  Age window  - The time or number time steps the initial population is to be propagated into the future 
+3.  Pop size  -  The population size 
+4.  Del - time step 
+5.  Birth counts -total number of births 
+
+The Net Attrition rate is the probability of surviving being infected and not dying at age $a$ and time $t$ i.e $\rho(a, t)$. The number of susceptibles aged $a$ at time $t$,  $S(a,t)$ is given by 
+
+$$S(a,t) = \rho(a - 1,t - 1)\cdot S(a - 1, t - 1)$$
+The Birth counts is given as a vetor of the total number of births aged 0 at time $t$, and $t$ is infact a vector of times i.e $S(0, t) = S(0, t : t + \delta\cdot n )$   and $n\in(0,1,2,...)$. 
+
+```{r neccesary functions, include=FALSE}
+
+Make_birth_counts <- function(t_1,  
+                              t_2, 
+                              delta, 
+                              N_0){
+  birthcounts = data.frame(Time  = seq(t_1, t_2, delta),
+                          Susceptible_0_t = (seq(t_1, t_2, delta)/sum(seq(t_1, t_2, delta))) * N_0)
+  
+  return(birthcounts)
+}
+
+Make_birth_counts(t_1 = 1,  
+                  t_2 = 5, 
+                  delta = 1/12, 
+                  N_0 = 10000)
+
+
+
+
+
+Incidence_var_a <- function(t, conc = 0.05, agemin =15,  
+                            agemax = 50,  agepeak= 25, 
+                            Imin =0.01,  Ipeak =0.05, 
+                            Ifin =0.02){
+  #varying Inicdence 
+  incidence = ifelse(t <= agemin, 0, 
+                     ifelse(t <= agepeak, Imin + ((Ipeak - Imin)/(agepeak - agemin)) * (t - agemin),
+                            ifelse(t <= agemax, Ipeak + ((Ifin - Ipeak )/(agemax - agepeak)) * (t - agepeak), 0)))
+  
+  return(incidence)
+}
+
+
+
+Excess_Mortality_var_a <- function(t, conc = 0.05, agemin =15,  
+                                   agemax = 50,   
+                                   exmin =0.01,  
+                                   exfin =0.05){
+  #varying mortality
+  Ex_mort = ifelse(t <= agemin, 0, 
+                   ifelse(t <= agemax, exmin + ((exfin - exmin)/(agemax - agemin)) * (t - agemin),
+                          0))
+  
+  return(Ex_mort)
+}
+
+
+
+Backgrnd_Mortality_var <- function(t, age = 1 ,Mort_peak = 0.01){
+  Mort =  Mort_peak
+  return (Mort)
+}
+
+
+```
+ Above are the required functions to implement the code below (calculation of birth counts, incidence, and mortality).
+```{r Survival_Susceptibles}
+Survival_Susceptibles <- function(Age,
+                                   Time, 
+                                   Incidence, 
+                                   Mortality, 
+                                   pop_size, 
+                                   Del,
+                                   Birth_counts = Make_birth_counts){
+
+    Susceptible  = matrix(0, nrow = length(Time) + Age, ncol =  length(1:Age))
+   
+   for (aa in 1:Age){
+   
+     if (aa == 1) {
+     
+     intergrand <-  (function(x){Incidence(x, Time + x) + Mortality(x, Time + x)})
+     prob_survival = diag(1 - (sapply(Time,function(t) integrate( intergrand, lower = Age - 1, upper = Age )$value)))
+     
+     
+     Susceptible[(1:length(Time)) + 1, 1] =  prob_survival %*% matrix(Birth_counts(t_1 = min(Time), 
+                                                                                               t_2 = max(Time), 
+                                                                                               delta = Del, 
+                                                                                               N_0 = pop_size)$Susceptible_0_t, 
+                                                                                               nrow = length(Time))
+   }else{
+     
+     intergrand <-  (function(x){Incidence(x, Time + x) + Mortality(x, Time + x)})
+     
+     prob_survival = diag(1 - (sapply(Time,function(t) integrate( intergrand, lower = aa - 1, upper = aa )$value)))
+     
+     
+     Susceptible[(1:length(Time)) + aa, aa] =  prob_survival %*% matrix(Susceptible[(1:length(Time) + aa) - 1, aa - 1], byrow = T)
+     }
+  
+   }
+   return(Susceptible)
+   
+ }  
+
+```
+Based on this function is was deemed fit to not calculate the attrition rate within the simulation of the suceptibles but to provide a matrix of attrition rate.
+Key differences is that the above function takes in incidence and mortality rates and calculates the probability of surviving in the sucseptibles uninfected and not dying.
+
+
+Below we present the same version of the same function the:
+1. Net_attrition_rate 
+2. Susceptibles_pop
+
+We first estimate the attrition rate and subsequently parse the net attrition rate as a variable in the susceptibles function.
+
+
+```{r net attrition rate}
+y = Net_Attritions_rate <- function(Age,
+                                Time, 
+                                Incidence, 
+                                Mortality, 
+                                Del
+                                ){
+  
+  
+  #function calculates the attrition rates i.e. prob of not getting 
+  #infected and the probability of not dying for a specific age and time.  
+  
+  net_Attritions_rate  = matrix(0, nrow = length(Time) + Age, ncol =  length(1:Age))
+  
+  for (aa in 1:Age){
+    
+    if (aa == 1) {
+      
+      intergrand <-  (function(x){Incidence(x, Time + x) + Mortality(x, Time + x)})
+      #prob_survival = 1 - (sapply(Time,function(t) integrate( intergrand, lower = Age - 1, upper = Age )$value))
+      
+      
+      net_Attritions_rate[(1:length(Time)) + 1, 1] =  1 - (sapply(Time,function(t) integrate( intergrand, lower = Age - 1, upper = Age )$value))
+      
+    }else{
+      
+      intergrand <-  (function(x){Incidence(x, Time + x) + Mortality(x, Time + x)})
+      
+      #prob_survival = 1 - (sapply(Time,function(t) integrate( intergrand, lower = aa - 1, upper = aa )$value))
+      
+      
+      net_Attritions_rate[(1:length(Time)) + aa, aa] =  1 - (sapply(Time,function(t) integrate( intergrand, lower = aa - 1, upper = aa )$value))
+    }
+    
+  }
+  
+  net_Attritions_rate = cbind( c(rep(1, length(Time)), rep(0,( nrow(net_Attritions_rate) - length(Time)))), net_Attritions_rate)
+ 
+  return(net_Attritions_rate)
+  
+}
+
+
+
+```
+
+
+Example on output from the call to net attrition rate function 
+
+```{r call net attrition rate, echo=FALSE}
+ Net_Attritions_rate(Age = 2,
+                        Time = seq(1, 3, 1), 
+                        Incidence = Incidence_var_a, 
+                        Mortality = Backgrnd_Mortality_var
+                        )
+
+
+
+```
+
+and below is the calculation of the susceptibles for a specific age window and time 
+
+```{r Susceptible population}
+
+
+Susceptibles_pop <- function(Age,
+                             Time,
+                             pop_size = 10000,
+                             prob_survival = Net_Attritions_rate(Age = 5,
+                                                                 Time = seq(1, 5, 1), 
+                                                                 Incidence = Incidence_var_a, 
+                                                                 Mortality = Backgrnd_Mortality_var),
+                                  Del  = 1,
+                                  Birth_counts = Make_birth_counts){
+  
+  Susceptible  = matrix(0, nrow = length(Time) + Age, ncol =  length(1:Age)+1)
+  
+  Susceptible[(1:length(Time)), 1] = matrix(Birth_counts(t_1 = min(Time), 
+                                                         t_2 = max(Time), 
+                                                         delta = Del, 
+                                                         N_0 = pop_size)$Susceptible_0_t, 
+                                                         nrow = length(Time))
+  
+  for (aa in 1:Age){
+    
+    if (aa == 1){
+      #  the indexing is confusing
+      
+      Susceptible[(1:length(Time)) + aa, aa + 1] =  diag(prob_survival[(1:length(Time))+aa, aa + 1]) %*% Susceptible[(1:length(Time)), 1]
+      
+    }else{
+      
+      
+      Susceptible[(1:length(Time)) + aa, aa +1] =  diag(prob_survival[(1:length(Time))+aa, aa+1]) %*% matrix(Susceptible[(1:length(Time) + aa) - 1, aa], byrow = T)
+    }
+    
+  }
+  return(Susceptible)
+  
+}  
+
+```
+
+
+Example on output from the call to Susceptibles population function 
+
+```{r call Susceptible population, echo=FALSE}
+ Susceptibles_pop(Age = 2,
+                  Time = seq(1, 3, 1),
+                  pop_size = 10000,
+                  Net_Attritions_rate(Age = 2,
+                                      Time = seq(1, 3, 1), 
+                                      Incidence = Incidence_var_a, 
+                                      Mortality = Backgrnd_Mortality_var),
+                                       Del  = 1)
+
+
+
+```
+
+
+##Simulation (Infected Population)
+
+The simulation of the infected at a given age $a$, time $t$ for time since infection $\tau= aa - aa_0$ is  in two parts 
+1. simulation of the $I(a, t, \tau =0)$, and 
+2. simulation of $I(a, t, \tau >0 )$
+
+
+
+
+
+
