@@ -26,7 +26,7 @@ generate_infected_mortality_array <- function(age_steps,
   for (aa in ages){
     for (ta in ages){
 
-      infected_mortality_array[times + aa +1, aa + 1, ta + 1] = generate_base_mortality_fun(times + aa, aa) * generate_excess_mortality_tau_fun(times + aa, aa, ta)
+      infected_mortality_array[times + aa +1, aa + 1, ta + 1] = 1 - generate_base_mortality_fun(times + aa, aa) * generate_excess_mortality_tau_fun(times + aa, aa, ta)
 
     }
   }

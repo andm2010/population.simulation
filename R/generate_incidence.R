@@ -27,6 +27,7 @@ generate_incidence <- function(t, constant = 0.05, agemin = 0,
 }
 
 
+<<<<<<< HEAD
 # Option 2
 # generate_incidence <- function(t, age ) {
 #
@@ -35,5 +36,7 @@ generate_incidence <- function(t, constant = 0.05, agemin = 0,
 #   return(incidence)
 # }
 
+=======
+>>>>>>> bf1c9c599a8fcc1e65362396ffcd4971c953fe62
 
 
