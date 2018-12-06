@@ -1,11 +1,16 @@
-#'calculates the probability of survival in the infected populations
-#' @param age_steps the aging step of the initial birth counts
-#' @param birth_dates calender dates of birth
-#' @param generate_excess_mortality_fun function of excess mortality for a given age, time, and time since infection.
-#' @param generate_base_mortality_fun baseline mortality as a function of age and time
-#' @return returns an array of dimension time, age and time since infection see example
+#' a function that returns a matrix of probabilities of mortality for each age and time step of the simulation
+#' @usage #' @usage \code{generate_infected_mortality_array} (\code{age_steps},\code{birth_dates},\code{generate_excess_mortality_tau_fun}, \code{generate_base_mortality_fun})
+#' @param age_steps a number. Indicates the number of steps forward each age group will be aged in the simulation by \code{do_sim}
+#' @param birth_dates a numeric vector of length min:max; indicates the range of ages to be included in simulation. Note that date format is not used.
+#' @param generate_base_mortality_fun a function which takes as arguments age and time and returns a numberic rate of mortality for each age and time included in the simulation.
+#' This function can be defined by user or can be selected from among several default options included in the package.
+#' The user-defined or package default function should be called by name when included as an argument in the \code{generate_base_mortality_matrix} function.
+#' @param generate_excess_mortality_tau_fun a function which takes as arguments age, time and tau - i.e. the time since infection among the infected population - and returns a numberic rate of mortality for each age and time included in the simulation
+#' This function can be defined by user or can be selected from among several default options included in the package.
+#' The user-defined or package default function should be called by name when included as an argument in the \code{generate_base_mortality_matrix} function.
+#' @return returns an array of dimensions time, age and time since infection
 #' @examples
-#' generate_infected_mortality_array(age_steps = 2, birth_dates = 1992:1995, generate_excess_mortality_tau_fun = generate_excess_mortality_tau, generate_base_mortality_fun = generate_base_mortality)
+#' x <- generate_infected_mortality_array(age_steps = 2, birth_dates = 1992:1995, generate_excess_mortality_tau_fun = generate_excess_mortality_tau, generate_base_mortality_fun = generate_base_mortality)
 
 generate_infected_mortality_array <- function(age_steps,
                                         birth_dates,

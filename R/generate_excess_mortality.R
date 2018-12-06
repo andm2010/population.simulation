@@ -1,16 +1,17 @@
-#' a function that takes as arguments age and time and returns a numeric rate of mortality for specified age and time
-#' The \code{generate_excess_mortality} function is required as an argument for the packages main \code{do_sim} function
+#' a function that takes as arguments age and time and returns a numeric vector of length equivelent to the number of times indicated by the simulation
+#' representing a rate of excess mortality -i.e. among infected population relative to non-infected population - at the indicated age and time
+#' The generate_mortality function is required as an argument for the package's do_simulation function
 #' The function may be user defined and stored as an R object. Otherwise a default value - entered as "default" - is provided by the package
-#'
-#' @param t numeric, indicates time at which mortality rate is desired
-#' @param constant ?
-#' @param age_min numeric, indicates desired minimum age
-#' @param age_max numeric, indicates desired maximum age
-#' @param exmin numeric, indicates minimum rate of mortality, which is reached at \code{age_min}
-#' @param exfin numeric, indicates peak mortality, which is reached at \code{age_max}
-#' @return a numeric vector that represents the mortalit rate at \code{t}
-#' @examples x <- generate_excess_mortality(t=7, constant = 0.05, age_min = 0, age_max = 50, exmin =0.01, exfin =0.05)
-#'
+#' @param t numeric, indicates time or times at which the excess mortality rate is desired
+#' @param constant numeric, indicates a constant rate of excess mortality
+#' @param age_min numeric, indicates minimum age to be included in the simulation
+#' @param age_max numeric, indicates maximum age to be included in the simulation
+#' @param exmin numeric, indicates minimum excess mortality, which is at \code{age_min}
+#' @param exfin numeric, indicates maximum/final excess mortality at \code{age_max}, unless otherwise specified by user defined function
+#' @return a numeric vector that represents the excess mortality rate at \code{t}.
+#' @examples generate_mortality (t=7, constant = 0.05, age_min = 0, age_max = 50, exmin =0.01, exfin =0.02)
+#' generate_excess_mortality(7)
+#' generate_excess_mortality(7:10)
 
 generate_excess_mortality <- function(t, constant = 0.05, age_min = 0, age_max = 50, exmin =0.01, exfin =0.05)
   {

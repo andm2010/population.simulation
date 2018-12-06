@@ -54,7 +54,7 @@ infected_mortality_array <- generate_infected_mortality_array (generate_base_mor
                                                                generate_excess_mortality_tau_fun,
                                                                birth_dates, age_steps) # excess + baseline mortality
 
-infected_pop_counts1 <- generate_infected_population (infected_tau_0_counts,
+infected_pop_counts <- generate_infected_population (infected_tau_0_counts,
                                                      infected_mortality_array) # do we need a matrix version of this
 
 }
