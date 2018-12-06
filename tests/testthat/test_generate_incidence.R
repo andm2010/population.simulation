@@ -15,6 +15,7 @@ generate_incidence <- function(t, age ) {
 x <- generate_incidence(t=25, age=25 )
 
 # Run expectations
+
 expect_is(x, "numeric")
 expect_is(x, "factor")
 expect_length(x, 1)
@@ -24,7 +25,14 @@ expect_equivalent(length(x), length(age))
 expect_false(is.array(x))
 expect_true(is.vector(x))
 
-
+# passes
+test_that("checks that returned value is numeric", {
+  expect_is(x, "numeric")
+  })
+#fails
+test_that("checks that returned value is numeric", {
+  expect_is(x, "factor")
+})
 
 
 #Or......
