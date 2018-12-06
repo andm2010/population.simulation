@@ -39,5 +39,5 @@ generate_incidence2 <- function(t, conc = 0.05, agemin = 0,
 }
 
 
-x <-
+
 

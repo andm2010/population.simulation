@@ -8,7 +8,9 @@
 #' @examples y <-  generate_incidence_matrix (age_steps = 2, birth_dates = 10:15, generate_incidence)
 
 
-generate_incidence_matrix <- function(age_steps,birth_dates,generate_incidence_fun)
+generate_incidence_matrix <- function(age_steps,
+                                      birth_dates,
+                                      generate_incidence_fun)
   {
 
   incidence_matrix  = matrix(NA, nrow = length(birth_dates) + age_steps, ncol =  length(1:age_steps))
@@ -16,7 +18,7 @@ generate_incidence_matrix <- function(age_steps,birth_dates,generate_incidence_f
 
   for (aa in 1:age_steps){
 
-    incidence_matrix[times + aa, aa] =  generate_incidence(times + aa, aa)
+    incidence_matrix[times + aa, aa] =  generate_incidence_fun(times + aa, aa)
 
   }
 

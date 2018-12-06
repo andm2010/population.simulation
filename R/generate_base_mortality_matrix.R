@@ -23,7 +23,7 @@ generate_base_mortality_matrix <- function(age_step,
   return(mortality_matrix)
 }
 
-mortality_matrix <- generate_base_mortality_matrix(2, 0:5, generate_base_mortality = generate_base_mortality)
+mortality_matrix <- generate_base_mortality_matrix(2, 0:5, generate_base_mortality = Backgrnd_Mortality_var)
 
 
 
