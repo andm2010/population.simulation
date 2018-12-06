@@ -5,13 +5,12 @@
 #' @examples
 #'  x = function(time = 4, age = 0:2, tau = 0:2){return(0.2)}
 #'  y = function(time = 4, age = 0:2) {return(0.02)}
-#'  v = generate_infected_mortality(age_step = 2, birth_dates = 1992:1995, ex_mortality_fun = x, base_mortality_fun = y)
+#'  v = generate_infected_mortality_array (age_step = 2, birth_dates = 1992:1995, generate_excess_mortality_tau_fun = x, generate_base_mortality_fun = y)
 #'  generate_infected_population(infected_mortality_matrix = v, infected_pop_counts = matrix(1:21, 7, 3))
 
 
 generate_infected_population  <- function(infected_mortality_matrix,
                                           infected_pop_counts
-
                                           ){
 
   #the function simulates the infected population at time tt aged aa and were infected at age aa_0
@@ -27,7 +26,7 @@ generate_infected_population  <- function(infected_mortality_matrix,
   ages  <-  2:ncol(infected_pop_counts)
 
   for (aa in ages){
-    Tau = 2:(aa+1)
+    Tau = 2:(aa)
     for ( ta  in  Tau){
 
       infected[times, aa , ta] = infected_mortality_matrix[times - 1, aa - 1, ta -1] * infected[times - 1 , aa - 1, ta - 1]
@@ -38,3 +37,9 @@ generate_infected_population  <- function(infected_mortality_matrix,
   return(infected)
 }
 
+
+
+x = function(time = 4, age = 0:2, tau = 0:2){return(0.2)}
+y = function(time = 4, age = 0:2) {return(0.02)}
+v = generate_infected_mortality_array (age_step = 2, birth_dates = 1992:1995, generate_excess_mortality_tau_fun = x, generate_base_mortality_fun = y)
+generate_infected_population(infected_mortality_matrix = v, infected_pop_counts = matrix(1:21, 7, 3))
