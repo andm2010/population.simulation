@@ -17,7 +17,8 @@
 generate_incidence <- function(t, constant = 0.05, agemin = 0,
                             agemax = 50,  agepeak= 25,
                             Imin =0.01,  Ipeak =0.05,
-                            Ifin =0.02){
+                            Ifin =0.02)
+  {
 
   incidence = ifelse(t <= agemin, 0,
                      ifelse(t <= agepeak, Imin + ((Ipeak - Imin)/(agepeak - agemin)) * (t - agemin),
@@ -27,9 +28,9 @@ generate_incidence <- function(t, constant = 0.05, agemin = 0,
 }
 
 
-
+#
 # Option 2
-# generate_incidence <- function(t, age ) {
+# my_incidence <- function(t, age ) {
 #
 #   incidence = exp(-(1/age)*t)*0.1
 #

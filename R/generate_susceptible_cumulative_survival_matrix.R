@@ -36,10 +36,6 @@ susceptible_cumulative_survival_matrix <- matrix(NA, ncol = ncol(susceptible_sur
 
 
 
-x <- generate_susceptible_cumulative_survival_matrix(matrix(seq(0.01, 0.16, 0.01), ncol = 2 , nrow = 8))
-
-
-
 
 
 

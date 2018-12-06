@@ -1,15 +1,25 @@
-#' a function that simulates a population over a specified range of ages and times and returns a matrix - or matrices - of
-#' the total number of individual members of the simulated population who are infected and susceptible at each age and time specified by the user.
+#' a function that simulates an age and time structured population from a non-mechanistic model.
+#' The user specifies a range of ages, a number of steps forward in time that the population will be aged,
+#' and functions specifying the birth rate, incidence mortality and excess mortality among infected members of the popultion.
+#' The funciton returns a matrix - or matrices - of the total number of individual members of the simulated population who are infected and susceptible at each age and time specified by the user.
 #' The function also returns a matrix - or matrices -  of the prevalence of infection at each age and time.
 #'
-#' @param total_births
-#' @param birth_dates
-#' @param delta
-#' @param age_steps
-#' @param generate_birth_counts_fun The function may be user defined and stored as an R object. Otherwise a default value - entered as "default" - is provided by the package
-#' @param generate_incidence_fun The function may be user defined and stored as an R object. Otherwise a default value - entered as "default" - is provided by the package
-#' @param generate_base_mortality_fun The function may be user defined and stored as an R object. Otherwise a default value - entered as "default" - is provided by the package
-#' @param generate_base_mortality_tau_fun The function may be user defined and stored as an R object. Otherwise a default value - entered as "default" - is provided by the package
+#' @useage do_simiulation(total_births,birth_dates,delta,age_steps,
+#'                       generate_birth_counts_fun,generate_incidence_fun,
+#'                       generate_base_mortality_fun, generate_base_mortality_tau_fun)
+#'
+#' @param total_births a number, indicates the total number of individual members of the population
+#' @param birth_dates a vector of numbers, indicating the minimum and the maximum ages to be included in the simulation
+#' @param delta a number, indicates the rate of change between each age/time step, which is used to calculate the total number of births
+#' @param age_steps a number, indicates the number of steps forward in time that the population will be aged
+#' @param generate_birth_counts_fun a function, indicating the rate that birth occur for each age and time
+#' May be user defined. Otherwise a default value requiring no additional input to the argument of the do dim function is provided by the package
+#' @param generate_incidence_fun a function, indicating the incidence rate for each age and time
+#' May be user defined. Otherwise a default value requiring no additional input to the argument of the do dim function is provided by the package
+#' @param generate_base_mortality_fun a function, indicating the rate of mortality in the non-infected population
+#' May be user defined. Otherwise a default value requiring no additional input to the argument of the do dim function is provided by the package
+#' @param generate_base_mortality_tau_fun a function, indicating the rate of mortality in the infected population
+#' May be user defined. Otherwise a default value requiring no additional input to the argument of the do dim function is provided by the package
 #' @return a list, including a matrix of counts of the infected population, a matrix of counts of the susceptible population, and a matrix of the prevalence of infection among the total population at each age and time indicated by the simulation
 #' @examples do_simiulation(total_births = 1000,
 #'                         birth_dates = 1945:1950,
@@ -25,10 +35,10 @@ do_simiulation <- function (total_births,
                             birth_dates,
                             delta,
                             age_steps,
-                            generate_birth_counts_fun,
-                            generate_incidence_fun,
-                            generate_base_mortality_fun,
-                            generate_base_mortality_tau_fun)
+                            generate_birth_counts_fun = generate_birth_counts,
+                            generate_incidence_fun = generate_incidence,
+                            generate_base_mortality_fun = generate_base_mortality,
+                            generate_base_mortality_tau_fun = generate_base_mortality_fun)
 {
 
   birth_counts <- generate_birth_counts_fun (total_births, birth_dates, delta)
@@ -63,15 +73,5 @@ do_simiulation <- function (total_births,
 
   }
 
-
-# Example
-do_simiulation(total_births = 1000,
-               birth_dates = 1945:1950,
-               delta = 1,
-               age_steps = 3,
-               generate_birth_counts_fun = generate_birth_counts,
-               generate_incidence_fun = generate_incidence,
-               generate_base_mortality_fun = generate_base_mortality,
-               generate_base_mortality_tau_fun = generate_excess_mortality_tau)
 
 

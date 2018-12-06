@@ -12,12 +12,10 @@
 #' @examples
 #' x <- generate_infected_mortality_array(age_steps = 2, birth_dates = 1992:1995, generate_excess_mortality_tau_fun = generate_excess_mortality_tau, generate_base_mortality_fun = generate_base_mortality)
 
-generate_infected_mortality_array <- function(age_steps,
-                                        birth_dates,
-                                        generate_excess_mortality_tau_fun,
-                                        generate_base_mortality_fun){
-
-
+generate_infected_mortality_array <- function(age_steps, birth_dates,
+                                              generate_excess_mortality_tau_fun,
+                                              generate_base_mortality_fun)
+  {
 
   times  <-  0 : length(birth_dates)
   ages <- 0:age_steps
