@@ -1,14 +1,14 @@
 Package: population.simulation
 Type: Package
-Title: The Package Simulates Population.
+Title: Population Simulation
 Version: 0.1.0
 Author: Laurette Mhlanga and Andrew Maher 
-Maintainer: The package maintainer <laurette@aims.ac.tz/andrew.maher@sun.ac.za>
-Description: The package simulates an age and time structured population, from a non-mechanistic model. Requires no dependencies.
-    
-License: GPL
+Maintainer: The package maintainer <laurette@aims.ac.tz>
+Description: The package simulates an age and time structured population from a non-mechanistic model that requires no dependencies.
+License: LGPL
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
 Suggests: 
-    testthat
+    testthat,
+    roxygen2

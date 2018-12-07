@@ -1,12 +1,17 @@
+#' generate_infected_mortality_array
+#'
 #' a function that returns a matrix of count of the number of infected individuals in the population for each age and time step of the simulation
+#'
 #' @param infected_pop_counts the of the total  number of people infected at a given age and time
-#' @param infected_mortality_matrix a survival probability matrix for the infected a 3 dimensional structure of age, time and tau(time since infection)
-#' @return returns a number or or a vector of mortality rates for a a given age and time given  \code{susceptible_survival_rate_matri}
+#' @param infected_mortality_matrix a survival probability matrix for the infected a 3 dimensional structure of age, time and tau, i.e. the time since infection
+#' @return returns a number or or a vector of mortality rates for a a given age and time given  susceptible_survival_rate_matrix
 #' @examples
 #'  x = function(time = 4, age = 0:2, tau = 0:2){return(0.2)}
 #'  y = function(time = 4, age = 0:2) {return(0.02)}
-#'  v = generate_infected_mortality_array (age_step = 2, birth_dates = 1992:1995, generate_excess_mortality_tau_fun = x, generate_base_mortality_fun = y)
-#'  generate_infected_population(infected_mortality_matrix = v, infected_pop_counts = matrix(1:21, 7, 3))
+#'  v = generate_infected_mortality_array (age_step = 2, birth_dates = 1992:1995,
+#'  generate_excess_mortality_tau_fun = x, generate_base_mortality_fun = y)
+#'  generate_infected_population(infected_mortality_matrix = v,
+#'  infected_pop_counts = matrix(1:21, 7, 3))
 
 
 generate_infected_population  <- function(infected_mortality_matrix,infected_pop_counts)
